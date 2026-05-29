@@ -9,7 +9,7 @@ case "$ARCH" in
         exit 1
         ;;
 esac
-ech0 "RELEASE=$RELEASE" >> "$GITHUB_OUTPUT"
+echo "RELEASE=$RELEASE" >> "$GITHUB_OUTPUT"
 echo "ARCH=$ARCH" >> "$GITHUB_OUTPUT"
 
 # start build
