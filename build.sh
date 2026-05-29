@@ -58,6 +58,9 @@ sudo chroot ./termuxwsl apt update
 sudo chroot ./termuxwsl apt upgrade -y
 EOF
 
+# Debug list file on termux chroot
+ls -a ./termuxwsl/termuxwsl
+
 cat <<-EOF | sudo unshare -mpf bash -e -
 sudo mount --bind /dev ./termuxwsl/termuxwsl/dev
 sudo mount --bind /proc ./termuxwsl/termuxwsl/proc
