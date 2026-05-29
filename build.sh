@@ -21,7 +21,7 @@ digest=$(echo "$manifest" | jq -r ".manifests[] | select(.platform.architecture 
 docker pull "debian:stable@${digest}"
 docker export $(docker create "debian:stable@${digest}") --output $GITHUB_WORKSPACE/debian.tar
 mkdir -p ./termuxwsl/termuxwsl
-sudo tar -xvpf debian.tar -C ./termuxwsl
+sudo tar -xpf debian.tar -C ./termuxwsl
 # Fetch image manifest
 manifest=$(docker manifest inspect termux/termux-docker:latest)
 # Fetch image digest
@@ -30,7 +30,7 @@ digest=$(echo "$manifest" | jq -r ".manifests[] | select(.platform.architecture 
 docker pull "termux/termux-docker:latest@${digest}"
 docker export $(docker create "termux/termux-docker:latest@${digest}") --output $GITHUB_WORKSPACE/termux.tar
 sudo cp termux.tar ./termuxwsl/termuxwsl
-sudo tar -xvpf ./termuxwsl/termuxwsl/termux.tar
+sudo tar -xpf ./termuxwsl/termuxwsl/termux.tar -C ./termuxwsl/termuxwsl
 sudo rm ./termuxwsl/termuxwsl/termux.tar
 mkdir -p ./termuxwsl/termuxwsl/usr
 mkdir -p ./termuxwsl/termuxwsl/dev
@@ -56,6 +56,15 @@ sudo echo 'nameserver 1.1.1.1' >> ./termuxwsl/etc/resolv.conf
 
 sudo chroot ./termuxwsl apt update
 sudo chroot ./termuxwsl apt upgrade -y
+EOF
+
+cat <<-EOF | sudo unshare -mpf bash -e -
+sudo mount --bind /dev ./termuxwsl/termuxwsl/dev
+sudo mount --bind /proc ./termuxwsl/termuxwsl/proc
+sudo mount --bind /sys ./termuxwsl/termuxwsl/sys
+sudo mount --bind /dev/pts ./termuxwsl/termuxwsl/dev/pts
+sudo chroot --userspec=system ./termuxwsl /bin/bash --login -c "apt update"
+sudo chroot --userspec=system ./termuxwsl /bin/bash --login -c "apt upgrade -y -o Dpkg::Options::='--force-confold'"
 EOF
 
 sudo cp ./wslconf/wsl-entrypoint.sh ./termuxwsl/wsl-entrypoint.sh
