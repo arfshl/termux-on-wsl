@@ -30,7 +30,12 @@ docker export $(docker create "termux/termux-docker:latest@${digest}") | xz -T 0
 sudo cp termux.tar.xz ./termuxwsl/termuxwsl
 sudo tar -xJpf ./termuxwsl/termuxwsl/termux.tar.xz
 sudo rm ./termuxwsl/termuxwsl/termux.tar.xz
-mkdir ./termuxwsl/termuxwsl/usr
+mkdir -p ./termuxwsl/termuxwsl/usr
+mkdir -p ./termuxwsl/termuxwsl/dev
+mkdir -p ./termuxwsl/termuxwsl/dev/pts
+mkdir -p ./termuxwsl/termuxwsl/proc
+mkdir -p ./termuxwsl/termuxwsl/sys
+
 sudo ln -s ./termuxwsl/termuxwsl/data/data/com.termux/files/usr/bin ./termuxwsl/termuxwsl/bin
 sudo ln -s ./termuxwsl/termuxwsl/data/data/com.termux/files/usr/bin ./termuxwsl/termuxwsl/usr/bin
 sudo ln -s ./termuxwsl/termuxwsl/data/data/com.termux/files/usr/lib ./termuxwsl/termuxwsl/lib
