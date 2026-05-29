@@ -1,4 +1,5 @@
 #!/bin/sh
+export RELEASE=$(date +"%Y%m%d")
 ARCH=$(uname -m)
 case "$ARCH" in
     x86_64|amd64) ARCH=amd64 ;;
@@ -8,6 +9,7 @@ case "$ARCH" in
         exit 1
         ;;
 esac
+ech0 "RELEASE=$RELEASE" >> "$GITHUB_OUTPUT"
 echo "ARCH=$ARCH" >> "$GITHUB_OUTPUT"
 
 # start build
@@ -56,13 +58,12 @@ sudo chroot ./termuxwsl apt update
 sudo chroot ./termuxwsl apt upgrade -y
 EOF
 
-cat <<-EOF | sudo unshare -mpf bash -e -
-sudo mount --bind /dev ./termuxwsl/termuxwsl/dev
-sudo mount --bind /proc ./termuxwsl/termuxwsl/proc
-sudo mount --bind /sys ./termuxwsl/termuxwsl/sys
-sudo mount --bind /dev/pts ./termuxwsl/termuxwsl/dev/pts
-sudo chroot --userspec=1000:1000 ./termuxwsl /bin/bash --login -c "apt update"
-sudo chroot --userspec=1000:1000 ./termuxwsl /bin/bash --login -c "apt upgrade -y -o Dpkg::Options::='--force-confold'"
-EOF
+sudo cp ./wslconf/wsl.conf ./termuxwsl/etc/wsl.conf
+sudo cp ./wslconf/wsl-distribution.conf ./termuxwsl/etc/wsl-distribution.conf
+sudo chmod 644 ./termuxwsl/etc/wsl-distribution.conf
+sudo mkdir -p ./termuxwsl/usr/lib/wsl/
+sudo cp ./wslconf/icon.png ./termuxwsl/usr/lib/wsl/icon.png
 
-
+cd ./termuxwsl
+sudo tar --numeric-owner --absolute-names -c  * | gzip --best > ../install.tar.gz
+mv ../install.tar.gz ../termux-wsl-$ARCH.wsl

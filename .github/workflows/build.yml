@@ -20,7 +20,6 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       RELEASE: ${{ steps.start_build.outputs.RELEASE }}
-      RELEASE_EDGE: ${{ steps.start_build.outputs.RELEASE_EDGE }}
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v6
@@ -50,8 +49,6 @@ jobs:
         with:
           name: arm64
           path: ./*.wsl
-
-
 
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
