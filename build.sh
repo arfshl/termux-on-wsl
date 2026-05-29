@@ -66,8 +66,8 @@ sudo mount --bind /dev ./termuxwsl/termuxwsl/dev
 sudo mount --bind /proc ./termuxwsl/termuxwsl/proc
 sudo mount --bind /sys ./termuxwsl/termuxwsl/sys
 sudo mount --bind /dev/pts ./termuxwsl/termuxwsl/dev/pts
-sudo chroot --userspec=system ./termuxwsl /bin/bash --login -c "apt update"
-sudo chroot --userspec=system ./termuxwsl /bin/bash --login -c "apt upgrade -y -o Dpkg::Options::='--force-confold'"
+#sudo chroot --userspec=system ./termuxwsl /bin/bash --login -c "apt update"
+#sudo chroot --userspec=system ./termuxwsl /bin/bash --login -c "apt upgrade -y -o Dpkg::Options::='--force-confold'"
 EOF
 
 sudo cp ./wslconf/wsl-entrypoint.sh ./termuxwsl/wsl-entrypoint.sh
