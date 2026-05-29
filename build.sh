@@ -44,24 +44,20 @@ cat <<-EOF | sudo unshare -mpf bash -e -
 sudo mount --bind /dev ./termuxwsl/dev
 sudo mount --bind /proc ./termuxwsl/proc
 sudo mount --bind /sys ./termuxwsl/sys
+sudo mount --bind /dev/pts ./termuxwsl/dev/pts
 sudo echo 'nameserver 1.1.1.1' >> ./termuxwsl/etc/resolv.conf
 
-
-
-sudo chroot ./termuxwsl apk update
-sudo chroot ./termuxwsl apk upgrade
-sudo chroot ./termuxwsl apk add bash sudo shadow shadow-login
+sudo chroot ./termuxwsl apt update
+sudo chroot ./termuxwsl apt upgrade -y
 EOF
 
-sudo cp ./wslconf/oobe.sh ./termuxwsl/etc/oobe.sh
-sudo chmod 644 ./termuxwsl/etc/oobe.sh
-sudo chmod +x ./termuxwsl/etc/oobe.sh
-sudo cp ./wslconf/wsl-distribution-edge.conf ./termuxwsl/etc/wsl-distribution.conf
-sudo chmod 644 ./termuxwsl/etc/wsl-distribution.conf
-sudo mkdir -p ./termuxwsl/usr/lib/wsl/
-sudo cp ./wslconf/icon.ico ./termuxwsl/usr/lib/wsl/icon.ico
+cat <<-EOF | sudo unshare -mpf bash -e -
+sudo mount --bind /dev ./termuxwsl/termuxwsl/dev
+sudo mount --bind /proc ./termuxwsl/termuxwsl/proc
+sudo mount --bind /sys ./termuxwsl/termuxwsl/sys
+sudo mount --bind /dev/pts ./termuxwsl/termuxwsl/dev/pts
+sudo chroot --userspec=system ./termuxwsl /bin/bash --login -c "apt update"
+sudo chroot --userspec=system ./termuxwsl /bin/bash --login -c "apt upgrade -y -o Dpkg::Options::='--force-confold'"
+EOF
 
 
-cd ./termuxwsl
-sudo tar --numeric-owner --absolute-names -c  * | gzip --best > ../install.tar.gz
-mv ../install.tar.gz ../alpine-edge-$ARCH.wsl
