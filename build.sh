@@ -21,7 +21,7 @@ digest=$(echo "$manifest" | jq -r ".manifests[] | select(.platform.architecture 
 docker pull "debian:stable@${digest}"
 docker export $(docker create "debian:stable@${digest}") --output $GITHUB_WORKSPACE/debian.tar
 mkdir -p ./termuxwsl/termuxwsl
-sudo tar -xf debian.tar -C ./termuxwsl
+sudo tar -xvpf debian.tar -C ./termuxwsl
 # Fetch image manifest
 manifest=$(docker manifest inspect termux/termux-docker:latest)
 # Fetch image digest
@@ -30,7 +30,7 @@ digest=$(echo "$manifest" | jq -r ".manifests[] | select(.platform.architecture 
 docker pull "termux/termux-docker:latest@${digest}"
 docker export $(docker create "termux/termux-docker:latest@${digest}") --output $GITHUB_WORKSPACE/termux.tar
 sudo cp termux.tar ./termuxwsl/termuxwsl
-sudo tar -xf ./termuxwsl/termuxwsl/termux.tar
+sudo tar -xvpf ./termuxwsl/termuxwsl/termux.tar
 sudo rm ./termuxwsl/termuxwsl/termux.tar
 mkdir -p ./termuxwsl/termuxwsl/usr
 mkdir -p ./termuxwsl/termuxwsl/dev
@@ -58,6 +58,8 @@ sudo chroot ./termuxwsl apt update
 sudo chroot ./termuxwsl apt upgrade -y
 EOF
 
+sudo cp ./wslconf/wsl-entrypoint.sh ./termuxwsl/wsl-entrypoint.sh
+sudo cp ./wslconf/wsl-entrypoint.sh ./termuxwsl/root/wsl-entrypoint.sh
 sudo cp ./wslconf/wsl.conf ./termuxwsl/etc/wsl.conf
 sudo cp ./wslconf/wsl-distribution.conf ./termuxwsl/etc/wsl-distribution.conf
 sudo chmod 644 ./termuxwsl/etc/wsl-distribution.conf
