@@ -17,18 +17,18 @@ manifest=$(docker manifest inspect debian:stable)
 digest=$(echo "$manifest" | jq -r ".manifests[] | select(.platform.architecture == \"$ARCH\") | .digest")
 # Pull and Export image
 docker pull "debian:stable@${digest}"
-docker export $(docker create "debian:stable@${digest}") | xz -T 0 > "$GITHUB_WORKSPACE/debian.tar.xz"
+docker export $(docker create "debian:stable@${digest}") --output $GITHUB_WORKSPACE/debian.tar.xz
 mkdir -p ./termuxwsl/termuxwsl
-sudo tar -xJpf debian.tar.xz -C ./termuxwsl
+sudo tar -xpf debian.tar.xz -C ./termuxwsl
 # Fetch image manifest
 manifest=$(docker manifest inspect termux/termux-docker:latest)
 # Fetch image digest
 digest=$(echo "$manifest" | jq -r ".manifests[] | select(.platform.architecture == \"$ARCH\") | .digest")
 # Pull and Export image
 docker pull "termux/termux-docker:latest@${digest}"
-docker export $(docker create "termux/termux-docker:latest@${digest}") | xz -T 0 > "$GITHUB_WORKSPACE/termux.tar.xz"
-sudo cp termux.tar.xz ./termuxwsl/termuxwsl
-sudo tar -xJpf ./termuxwsl/termuxwsl/termux.tar.xz
+docker export $(docker create "termux/termux-docker:latest@${digest}") --output $GITHUB_WORKSPACE/termux.tar
+sudo cp termux.tar ./termuxwsl/termuxwsl
+sudo tar -xpf ./termuxwsl/termuxwsl/termux.tar.xz
 sudo rm ./termuxwsl/termuxwsl/termux.tar.xz
 mkdir -p ./termuxwsl/termuxwsl/usr
 mkdir -p ./termuxwsl/termuxwsl/dev
@@ -61,8 +61,8 @@ sudo mount --bind /dev ./termuxwsl/termuxwsl/dev
 sudo mount --bind /proc ./termuxwsl/termuxwsl/proc
 sudo mount --bind /sys ./termuxwsl/termuxwsl/sys
 sudo mount --bind /dev/pts ./termuxwsl/termuxwsl/dev/pts
-sudo chroot --userspec=system ./termuxwsl /bin/bash --login -c "apt update"
-sudo chroot --userspec=system ./termuxwsl /bin/bash --login -c "apt upgrade -y -o Dpkg::Options::='--force-confold'"
+sudo chroot --userspec=1000:1000 ./termuxwsl /bin/bash --login -c "apt update"
+sudo chroot --userspec=1000:1000 ./termuxwsl /bin/bash --login -c "apt upgrade -y -o Dpkg::Options::='--force-confold'"
 EOF
 
 
