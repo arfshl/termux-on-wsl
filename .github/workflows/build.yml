@@ -50,5 +50,25 @@ jobs:
           name: arm64
           path: ./*.wsl
 
+  release:
+    runs-on: ubuntu-latest
+    needs: [build-amd64, build-arm64]
+    steps:
+      - name: Download artifact
+        uses: actions/download-artifact@v8
+        with:
+         merge-multiple: true
+
+      - name: Release stable
+        uses: softprops/action-gh-release@v3
+        with:
+          tag_name: ${{ needs.build-amd64.outputs.RELEASE }}
+          name: Stable ${{ needs.build-amd64.outputs.RELEASE }}
+          files: |
+            termux-wsl-amd64.wsl
+            termux-wsl-arm64.wsl
+          preserve_order: true
+          make_latest: true
+
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
