@@ -19,7 +19,7 @@ digest=$(echo "$manifest" | jq -r ".manifests[] | select(.platform.architecture 
 docker pull "debian:stable@${digest}"
 docker export $(docker create "debian:stable@${digest}") --output $GITHUB_WORKSPACE/debian.tar
 mkdir -p ./termuxwsl/termuxwsl
-sudo tar -xpf debian.tar -C ./termuxwsl
+sudo tar -xf debian.tar -C ./termuxwsl
 # Fetch image manifest
 manifest=$(docker manifest inspect termux/termux-docker:latest)
 # Fetch image digest
@@ -28,7 +28,7 @@ digest=$(echo "$manifest" | jq -r ".manifests[] | select(.platform.architecture 
 docker pull "termux/termux-docker:latest@${digest}"
 docker export $(docker create "termux/termux-docker:latest@${digest}") --output $GITHUB_WORKSPACE/termux.tar
 sudo cp termux.tar ./termuxwsl/termuxwsl
-sudo tar -xpf ./termuxwsl/termuxwsl/termux.tar
+sudo tar -xf ./termuxwsl/termuxwsl/termux.tar
 sudo rm ./termuxwsl/termuxwsl/termux.tar
 mkdir -p ./termuxwsl/termuxwsl/usr
 mkdir -p ./termuxwsl/termuxwsl/dev
