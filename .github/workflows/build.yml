@@ -33,7 +33,7 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           name: amd64
-          path: termux-wsl-and64.wsl
+          path: termux-wsl-amd64.wsl
           archive: false
 
   build-amd64-pacman:
