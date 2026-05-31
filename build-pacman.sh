@@ -20,7 +20,7 @@ digest=$(echo "$manifest" | jq -r ".manifests[] | select(.platform.architecture 
 # Pull and Export image
 docker pull "termux/termux-docker-pacman:latest@${digest}"
 docker export $(docker create "termux/termux-docker-pacman:latest@${digest}") --output $GITHUB_WORKSPACE/termux.tar
-cd ./dump
+mkdir ./dump
 sudo cp termux.tar ./dump
 sudo tar -xpf ./dump/termux.tar -C ./dump
 sudo rm ./dump/termux.tar
