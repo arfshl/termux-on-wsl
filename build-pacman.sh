@@ -26,6 +26,7 @@ sudo tar -xpf ./dump/termux.tar -C ./dump
 sudo rm ./dump/termux.tar
 
 sudo cp ./wslconf/wsl.sh ./dump/wsl.sh
+sudo cp ./wslconf/wsl-root.sh ./dump/wsl-root.sh
 sudo cp ./wslconf/wsl-distribution-pacman.conf ./dump/etc/wsl-distribution.conf
 sudo chmod 644 ./dump/etc/wsl-distribution.conf
 sudo mkdir -p ./dump/usr/lib/wsl/
